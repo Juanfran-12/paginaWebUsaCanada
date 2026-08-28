@@ -1,0 +1,354 @@
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        /* ===== NAVEGACIÓN ===== */
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(10, 25, 50, 0.95);
+            backdrop-filter: blur(8px);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: auto;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #60a5fa;
+        }
+
+        /* ===== HERO ===== */
+
+        .hero {
+            min-height: 100vh;
+            background:
+                linear-gradient(rgba(0, 20, 50, 0.65), rgba(0, 20, 50, 0.75)),
+                linear-gradient(135deg, #164e8a, #b91c1c);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 100px 20px 50px;
+        }
+
+        .hero-content {
+            max-width: 900px;
+        }
+
+        .hero h1 {
+            font-size: clamp(45px, 8vw, 85px);
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 22px;
+            line-height: 1.6;
+            margin-bottom: 35px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            background: white;
+            color: #12345b;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+
+        /* ===== SECCIONES ===== */
+
+        section {
+            max-width: 1200px;
+            margin: auto;
+            padding: 90px 25px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #102a43;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            max-width: 750px;
+            margin: 0 auto 45px;
+            color: #555;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        /* ===== TARJETAS ===== */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.14);
+        }
+
+        .card h3 {
+            color: #174a7e;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .card p {
+            line-height: 1.7;
+            color: #555;
+        }
+
+        /* ===== PAÍSES ===== */
+
+        .country {
+            border-radius: 25px;
+            padding: 45px;
+            margin-bottom: 50px;
+            color: white;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .usa {
+            background: linear-gradient(135deg, #142b4a, #b91c1c);
+        }
+
+        .canada {
+            background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+        }
+
+        .country h2 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .country p {
+            line-height: 1.8;
+            font-size: 17px;
+        }
+
+        .country-grid {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .info-box {
+            background: rgba(255,255,255,0.15);
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .info-box strong {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 8px;
+            opacity: 0.8;
+        }
+
+        .info-box span {
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        /* ===== COMPARACIÓN ===== */
+
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th, td {
+            padding: 18px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #102a43;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f1f5f9;
+        }
+
+        /* ===== DATOS CURIOSOS ===== */
+
+        .facts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .fact {
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 7px 20px rgba(0,0,0,0.08);
+        }
+
+        .fact .emoji {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .fact h3 {
+            margin-bottom: 10px;
+        }
+
+        /* ===== QUIZ ===== */
+
+        .quiz {
+            background: #102a43;
+            color: white;
+            padding: 45px;
+            border-radius: 25px;
+            max-width: 850px;
+            margin: auto;
+        }
+
+        .question {
+            font-size: 24px;
+            margin-bottom: 25px;
+        }
+
+        .answers {
+            display: grid;
+            gap: 12px;
+        }
+
+        .answer {
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            background: white;
+            color: #222;
+            transition: 0.2s;
+        }
+
+        .answer:hover {
+            background: #dbeafe;
+        }
+
+        #result {
+            margin-top: 25px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* ===== FOOTER ===== */
+
+        footer {
+            background: #071a2e;
+            color: white;
+            text-align: center;
+            padding: 35px 20px;
+        }
+
+        footer p {
+            margin: 7px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+
+        @media (max-width: 700px) {
+
+            nav {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            nav ul {
+                gap: 12px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 45px;
+            }
+
+            .hero p {
+                font-size: 17px;
+            }
+
+            .country {
+                padding: 30px 22px;
+            }
+
+            .country h2 {
+                font-size: 32px;
+            }
+        }
