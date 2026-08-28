@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Estados Unidos y Canadá</title>
+
+    <!-- MAPA INTERACTIVO -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(10, 25, 50, 0.96);
+            backdrop-filter: blur(8px);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: auto;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 22px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: .3s;
+        }
+
+        nav a:hover {
+            color: #60a5fa;
+        }
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .hero {
+            min-height: 100vh;
+
+            background:
+                linear-gradient(
+                    rgba(0, 20, 50, .65),
+                    rgba(0, 20, 50, .75)
+                ),
+                linear-gradient(
+                    135deg,
+                    #164e8a,
+                    #b91c1c
+                );
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+
+            color: white;
+            padding: 100px 20px 50px;
+        }
+
+        .hero-content {
+            max-width: 900px;
+        }
+
+        .hero h1 {
+            font-size: clamp(42px, 8vw, 82px);
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 21px;
+            line-height: 1.6;
+            margin-bottom: 35px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            background: white;
+            color: #12345b;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: .3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,.25);
+        }
+
+        /* =========================
+           SECCIONES
+        ========================= */
+
+        section {
+            max-width: 1200px;
+            margin: auto;
+            padding: 90px 25px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #102a43;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            color: #555;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        /* =========================
+           PAÍSES
+        ========================= */
+
+        .country {
+            border-radius: 25px;
+            padding: 45px;
+            margin-bottom: 45px;
+            color: white;
+            box-shadow: 0 15px 40px rgba(0,0,0,.15);
+        }
+
+        .usa {
+            background: linear-gradient(135deg,#142b4a,#b91c1c);
+        }
+
+        .canada {
+            background: linear-gradient(135deg,#b91c1c,#7f1d1d);
+        }
+
+        .country h2 {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .country p {
+            line-height: 1.8;
+            font-size: 17px;
+        }
+
+        .country-grid {
+            margin-top: 30px;
+
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit,minmax(180px,1fr));
+
+            gap: 15px;
+        }
+
+        .info-box {
+            background: rgba(255,255,255,.15);
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .info-box strong {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 8px;
+            opacity: .8;
+        }
+
+        .info-box span {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* =========================
+           TARJETAS
+        ========================= */
+
+        .cards {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit,minmax(270px,1fr));
+
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,.08);
+
+            transition: .3s;
+        }
+
+        .card:hover {
+            transform: translateY(-7px);
+        }
+
+        .card h3 {
+            color: #174a7e;
+            margin-bottom: 15px;
+            font-size: 23px;
+        }
+
+        .card p {
+            line-height: 1.7;
+            color: #555;
+        }
+
+        /* =========================
+           MAPA
+        ========================= */
+
+        #map {
+            height: 550px;
+            width: 100%;
+
+            border-radius: 22px;
+
+            box-shadow:
+                0 10px 30px rgba(0,0,0,.15);
+
+            z-index: 1;
+        }
+
+        .map-info {
+            background: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 15px;
+            text-align: center;
+
+            box-shadow:
+                0 5px 20px rgba(0,0,0,.08);
+        }
+
+        /* =========================
+           TABLA
+        ========================= */
+
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: 18px;
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th, td {
+            padding: 18px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #102a43;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f1f5f9;
+        }
+
+        /* =========================
+           CURIOSIDADES
+        ========================= */
+
+        .facts {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit,minmax(240px,1fr));
+
+            gap: 20px;
+        }
+
+        .fact {
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            text-align: center;
+
+            box-shadow:
+                0 7px 20px rgba(0,0,0,.08);
+        }
+
+        .emoji {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .fact h3 {
+            margin-bottom: 10px;
+        }
+
+        /* =========================
+           QUIZ
+        ========================= */
+
+        .quiz {
+            background: #102a43;
+            color: white;
+
+            padding: 45px;
+
+            border-radius: 25px;
+
+            max-width: 850px;
+            margin: auto;
+
+            box-shadow:
+                0 12px 35px rgba(0,0,0,.15);
+        }
+
+        .quiz-number {
+            color: #93c5fd;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .question {
+            font-size: 25px;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .answers {
+            display: grid;
+            gap: 12px;
+        }
+
+        .answer {
+            border: none;
+            padding: 16px;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            font-size: 16px;
+
+            background: white;
+            color: #222;
+
+            transition: .2s;
+        }
+
+        .answer:hover {
+            transform: translateX(5px);
+            background: #dbeafe;
+        }
+
+        .answer.correct {
+            background: #86efac;
+        }
+
+        .answer.incorrect {
+            background: #fca5a5;
+        }
+
+        .answer:disabled {
+            cursor: default;
+        }
+
+        #quiz-result {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        #next-btn,
+        #restart-btn {
+            display: block;
+
+            margin: 25px auto 0;
+
+            padding: 13px 28px;
+
+            border: none;
+            border-radius: 25px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        #next-btn {
+            background: #60a5fa;
+            color: white;
+        }
+
+        #restart-btn {
+            background: white;
+            color: #102a43;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 28px;
+            margin: 20px 0;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            background: #071a2e;
+            color: white;
+            text-align: center;
+            padding: 35px 20px;
+        }
+
+        footer p {
+            margin: 7px;
+        }
+
+        /* =========================
+           MÓVIL
+        ========================= */
+
+        @media(max-width:700px) {
+
+            nav {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            nav ul {
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 43px;
+            }
+
+            .hero p {
+                font-size: 17px;
+            }
+
+            .country {
+                padding: 30px 22px;
+            }
+
+            .country h2 {
+                font-size: 32px;
+            }
+
+            #map {
+                height: 420px;
+            }
+
+            .quiz {
+                padding: 28px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =========================
+     MENÚ
+========================= -->
+
+<header>
+
+    <nav>
+
+        <div class="logo">
+            🇺🇸 🇨🇦 Norteamérica
+        </div>
+
+        <ul>
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#paises">Países</a></li>
+            <li><a href="#mapa">Mapa</a></li>
+            <li><a href="#comparacion">Comparación</a></li>
+            <li><a href="#curiosidades">Curiosidades</a></li>
+            <li><a href="#quiz">Quiz</a></li>
+        </ul>
+
+    </nav>
+
+</header>
+
+
+<!-- =========================
+     INICIO
+========================= -->
+
+<main>
+
+<section class="hero" id="inicio">
+
+    <div class="hero-content">
+
+        <h1>🇺🇸 Estados Unidos & Canadá 🇨🇦</h1>
+
+        <p>
+            Descubrí dos grandes países de América del Norte,
+            sus territorios, culturas, paisajes, economías
+            y características principales.
+        </p>
+
+        <a href="#paises" class="btn">
+            Explorar ↓
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     PAÍSES
+========================= -->
+
+<section id="paises">
+
+    <h2 class="section-title">
+        Los países
+    </h2>
+
+    <p class="section-subtitle">
+        Estados Unidos y Canadá ocupan gran parte de América del Norte
+        y comparten una extensa frontera.
+    </p>
+
+
+    <div class="country usa">
+
+        <h2>🇺🇸 Estados Unidos</h2>
+
+        <p>
+            Estados Unidos se encuentra en América del Norte.
+            Es una república federal formada por 50 estados.
+            Cuenta con una gran diversidad de paisajes,
+            culturas y regiones. Su capital es Washington D. C.
+        </p>
+
+        <div class="country-grid">
+
+            <div class="info-box">
+                <strong>CAPITAL</strong>
+                <span>Washington D. C.</span>
+            </div>
+
+            <div class="info-box">
+                <strong>ESTADOS</strong>
+                <span>50</span>
+            </div>
+
+            <div class="info-box">
+                <strong>MONEDA</strong>
+                <span>Dólar estadounidense</span>
+            </div>
+
+            <div class="info-box">
+                <strong>CONTINENTE</strong>
+                <span>América del Norte</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="country canada">
+
+        <h2>🇨🇦 Canadá</h2>
+
+        <p>
+            Canadá se encuentra en la parte norte de América del Norte.
+            Es conocido por sus enormes bosques, lagos,
+            montañas y regiones de clima frío.
+            Su capital es Ottawa.
+        </p>
+
+        <div class="country-grid">
+
+            <div class="info-box">
+                <strong>CAPITAL</strong>
+                <span>Ottawa</span>
+            </div>
+
+            <div class="info-box">
+                <strong>PROVINCIAS</strong>
+                <span>10</span>
+            </div>
+
+            <div class="info-box">
+                <strong>TERRITORIOS</strong>
+                <span>3</span>
+            </div>
+
+            <div class="info-box">
+                <strong>MONEDA</strong>
+                <span>Dólar canadiense</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     CARACTERÍSTICAS
+========================= -->
+
+<section>
+
+    <h2 class="section-title">
+        Características
+    </h2>
+
+    <p class="section-subtitle">
+        Dos países con enormes territorios y una gran diversidad.
+    </p>
+
+    <div class="cards">
+
+        <div class="card">
+
+            <h3>🏔️ Relieve</h3>
+
+            <p>
+                Existen grandes cadenas montañosas, llanuras,
+                bosques, lagos y otros paisajes naturales.
+            </p>
+
+        </div>
+
+        <div class="card">
+
+            <h3>🌎 Geografía</h3>
+
+            <p>
+                Ambos países están ubicados en América del Norte
+                y comparten una extensa frontera.
+            </p>
+
+        </div>
+
+        <div class="card">
+
+            <h3>💰 Economía</h3>
+
+            <p>
+                Son países con economías desarrolladas
+                y participan activamente en el comercio mundial.
+            </p>
+
+        </div>
+
+        <div class="card">
+
+            <h3>🎭 Cultura</h3>
+
+            <p>
+                Poseen sociedades culturalmente diversas,
+                influenciadas por diferentes pueblos y migraciones.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     MAPA INTERACTIVO
+========================= -->
+
+<section id="mapa">
+
+    <h2 class="section-title">
+        🗺️ Mapa interactivo
+    </h2>
+
+    <p class="section-subtitle">
+        Podés hacer zoom, mover el mapa y seleccionar
+        diferentes ciudades para conocerlas.
+    </p>
+
+    <div id="map"></div>
+
+    <div class="map-info">
+        <strong>💡 Consejo:</strong>
+        tocá los marcadores del mapa para obtener información.
+    </div>
+
+</section>
+
+
+<!-- =========================
+     COMPARACIÓN
+========================= -->
+
+<section id="comparacion">
+
+    <h2 class="section-title">
+        🇺🇸 vs 🇨🇦
+    </h2>
+
+    <p class="section-subtitle">
+        Comparación entre ambos países.
+    </p>
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Característica</th>
+                    <th>🇺🇸 Estados Unidos</th>
+                    <th>🇨🇦 Canadá</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>Capital</td>
+                    <td>Washington D. C.</td>
+                    <td>Ottawa</td>
+                </tr>
+
+                <tr>
+                    <td>Moneda</td>
+                    <td>Dólar estadounidense</td>
+                    <td>Dólar canadiense</td>
+                </tr>
+
+                <tr>
+                    <td>División territorial</td>
+                    <td>50 estados</td>
+                    <td>10 provincias + 3 territorios</td>
+                </tr>
+
+                <tr>
+                    <td>Continente</td>
+                    <td>América del Norte</td>
+                    <td>América del Norte</td>
+                </tr>
+
+                <tr>
+                    <td>Idiomas</td>
+                    <td>Inglés es el más hablado</td>
+                    <td>Inglés y francés</td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     CURIOSIDADES
+========================= -->
+
+<section id="curiosidades">
+
+    <h2 class="section-title">
+        ⭐ Datos curiosos
+    </h2>
+
+    <div class="facts">
+
+        <div class="fact">
+
+            <div class="emoji">🍁</div>
+
+            <h3>Hoja de arce</h3>
+
+            <p>
+                Es uno de los símbolos más conocidos de Canadá
+                y aparece en su bandera.
+            </p>
+
+        </div>
+
+
+        <div class="fact">
+
+            <div class="emoji">🗽</div>
+
+            <h3>Estatua de la Libertad</h3>
+
+            <p>
+                Es uno de los monumentos más famosos
+                de Estados Unidos.
+            </p>
+
+        </div>
+
+
+        <div class="fact">
+
+            <div class="emoji">🏒</div>
+
+            <h3>Hockey</h3>
+
+            <p>
+                El hockey sobre hielo es uno de los deportes
+                más populares de Canadá.
+            </p>
+
+        </div>
+
+
+        <div class="fact">
+
+            <div class="emoji">🏞️</div>
+
+            <h3>Naturaleza</h3>
+
+            <p>
+                Ambos países poseen enormes parques nacionales
+                y una gran variedad de paisajes.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     QUIZ
+========================= -->
+
+<section id="quiz">
+
+    <h2 class="section-title">
+        🎮 Quiz
+    </h2>
+
+    <p class="section-subtitle">
+        Respondé las 10 preguntas y descubrí cuánto aprendiste.
+    </p>
+
+
+    <div class="quiz">
+
+        <div class="quiz-number" id="quiz-number">
+            Pregunta 1 de 10
+        </div>
+
+        <div class="question" id="question">
+            ¿Cuál es la capital de Canadá?
+        </div>
+
+        <div class="answers" id="answers"></div>
+
+        <div id="quiz-result"></div>
+
+        <button id="next-btn" style="display:none;">
+            Siguiente pregunta →
+        </button>
+
+        <button id="restart-btn" style="display:none;">
+            🔄 Jugar nuevamente
+        </button>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    <p>🇺🇸 🇨🇦 Estados Unidos y Canadá</p>
+
+    <p>Página educativa sobre América del Norte</p>
+
+    <p>© 2026 - Proyecto escolar</p>
+
+</footer>
+
+
+<!-- LEAFLET -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+<script>
+
+/* =====================================
+   MAPA INTERACTIVO
+===================================== */
+
+const map = L.map("map").setView(
+    [45, -100],
+    3
+);
+
+L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+        attribution:
+        '&copy; OpenStreetMap contributors'
+    }
+).addTo(map);
+
+
+/* CIUDADES */
+
+const ciudades = [
+
+    {
+        nombre: "🇺🇸 Washington D. C.",
+        coordenadas: [38.9072, -77.0369],
+        info: "Capital de Estados Unidos."
+    },
+
+    {
+        nombre: "🇺🇸 Nueva York",
+        coordenadas: [40.7128, -74.0060],
+        info: "Una de las ciudades más importantes de Estados Unidos."
+    },
+
+    {
+        nombre: "🇺🇸 Los Ángeles",
+        coordenadas: [34.0522, -118.2437],
+        info: "Gran ciudad de California, ubicada en la costa oeste."
+    },
+
+    {
+        nombre: "🇺🇸 Chicago",
+        coordenadas: [41.8781, -87.6298],
+        info: "Importante ciudad ubicada junto al lago Michigan."
+    },
+
+    {
+        nombre: "🇨🇦 Ottawa",
+        coordenadas: [45.4215, -75.6972],
+        info: "Capital de Canadá."
+    },
+
+    {
+        nombre: "🇨🇦 Toronto",
+        coordenadas: [43.6532, -79.3832],
+        info: "Una de las ciudades más grandes de Canadá."
+    },
+
+    {
+        nombre: "🇨🇦 Montreal",
+        coordenadas: [45.5017, -73.5673],
+        info: "Importante ciudad de la provincia de Quebec."
+    },
+
+    {
+        nombre: "🇨🇦 Vancouver",
+        coordenadas: [49.2827, -123.1207],
+        info: "Ciudad ubicada en la costa del océano Pacífico."
+    }
+
+];
+
+
+ciudades.forEach(ciudad => {
+
+    L.marker(ciudad.coordenadas)
+        .addTo(map)
+        .bindPopup(
+            `<strong>${ciudad.nombre}</strong>
+             <br><br>
+             ${ciudad.info}`
+        );
+
+});
+
+
+/* =====================================
+   QUIZ
+===================================== */
+
+const preguntas = [
+
+    {
+        pregunta: "¿Cuál es la capital de Canadá?",
+
+        opciones: [
+            "Toronto",
+            "Ottawa",
+            "Vancouver",
+            "Montreal"
+        ],
+
+        correcta: 1
+    },
+
+
+    {
+        pregunta: "¿Cuál es la capital de Estados Unidos?",
+
+        opciones: [
+            "Nueva York",
+            "Los Ángeles",
+            "Washington D. C.",
+            "Chicago"
+        ],
+
+        correcta: 2
+    },
+
+
+    {
+        pregunta: "¿Cuántos estados tiene Estados Unidos?",
+
+        opciones: [
+            "40",
+            "45",
+            "50",
+            "55"
+        ],
+
+        correcta: 2
+    },
+
+
+    {
+        pregunta: "¿Cuál es la moneda de Canadá?",
+
+        opciones: [
+            "Dólar canadiense",
+            "Euro",
+            "Peso canadiense",
+            "Libra"
+        ],
+
+        correcta: 0
+    },
+
+
+    {
+        pregunta: "¿En qué continente se encuentran ambos países?",
+
+        opciones: [
+            "Europa",
+            "Asia",
+            "América del Norte",
+            "Oceanía"
+        ],
+
+        correcta: 2
+    },
+
+
+    {
+        pregunta: "¿Qué símbolo aparece en la bandera de Canadá?",
+
+        opciones: [
+            "Una estrella",
+            "Una hoja de arce",
+            "Un águila",
+            "Un oso"
+        ],
+
+        correcta: 1
+    },
+
+
+    {
+        pregunta: "¿Qué país tiene como idiomas oficiales el inglés y el francés?",
+
+        opciones: [
+            "Estados Unidos",
+            "Canadá",
+            "México",
+            "Brasil"
+        ],
+
+        correcta: 1
+    },
+
+
+    {
+        pregunta: "¿Cuál de estas ciudades está en Estados Unidos?",
+
+        opciones: [
+            "Toronto",
+            "Ottawa",
+            "Vancouver",
+            "Nueva York"
+        ],
+
+        correcta: 3
+    },
+
+
+    {
+        pregunta: "¿Cuál de estas ciudades está en Canadá?",
+
+        opciones: [
+            "Chicago",
+            "Los Ángeles",
+            "Toronto",
+            "Miami"
+        ],
+
+        correcta: 2
+    },
+
+
+    {
+        pregunta: "¿Qué océano se encuentra al este de ambos países?",
+
+        opciones: [
+            "Océano Atlántico",
+            "Océano Índico",
+            "Océano Pacífico",
+            "Océano Ártico"
+        ],
+
+        correcta: 0
+    }
+
+];
+
+
+let preguntaActual = 0;
+let puntuacion = 0;
+let respondida = false;
+
+
+const questionElement =
+    document.getElementById("question");
+
+const answersElement =
+    document.getElementById("answers");
+
+const numberElement =
+    document.getElementById("quiz-number");
+
+const resultElement =
+    document.getElementById("quiz-result");
+
+const nextButton =
+    document.getElementById("next-btn");
+
+const restartButton =
+    document.getElementById("restart-btn");
+
+
+function mostrarPregunta() {
+
+    respondida = false;
+
+    resultElement.innerHTML = "";
+
+    nextButton.style.display = "none";
+
+    const pregunta =
+        preguntas[preguntaActual];
+
+
+    numberElement.innerHTML =
+        `Pregunta ${preguntaActual + 1} de ${preguntas.length}`;
+
+
+    questionElement.innerHTML =
+        pregunta.pregunta;
+
+
+    answersElement.innerHTML = "";
+
+
+    pregunta.opciones.forEach(
+        (opcion, indice) => {
+
+            const button =
+                document.createElement("button");
+
+            button.classList.add("answer");
+
+            button.innerText = opcion;
+
+            button.addEventListener(
+                "click",
+                () => seleccionarRespuesta(
+                    indice,
+                    button
+                )
+            );
+
+            answersElement.appendChild(button);
+
+        }
+    );
+
+}
+
+
+function seleccionarRespuesta(indice, button) {
+
+    if (respondida) return;
+
+    respondida = true;
+
+
+    const pregunta =
+        preguntas[preguntaActual];
+
+
+    const botones =
+        document.querySelectorAll(".answer");
+
+
+    botones.forEach(
+        boton => boton.disabled = true
+    );
+
+
+    if (indice === pregunta.correcta) {
+
+        puntuacion++;
+
+        button.classList.add("correct");
+
+        resultElement.innerHTML =
+            "✅ ¡Correcto!";
+
+    } else {
+
+        button.classList.add("incorrect");
+
+        botones[pregunta.correcta]
+            .classList.add("correct");
+
+        resultElement.innerHTML =
+            "❌ Incorrecto.";
+
+    }
+
+
+    nextButton.style.display = "block";
+
+}
+
+
+nextButton.addEventListener(
+    "click",
+    () => {
+
+        preguntaActual++;
+
+        if (
+            preguntaActual <
+            preguntas.length
+        ) {
+
+            mostrarPregunta();
+
+        } else {
+
+            mostrarResultado();
+
+        }
+
+    }
+);
+
+
+function mostrarResultado() {
+
+    numberElement.innerHTML =
+        "🏁 Quiz terminado";
+
+    questionElement.innerHTML =
+        "¡Terminaste todas las preguntas!";
+
+    answersElement.innerHTML = "";
+
+    nextButton.style.display = "none";
+
+    let mensaje = "";
+
+    if (puntuacion === 10) {
+
+        mensaje =
+            "🏆 ¡Perfecto! Sos un experto en el tema.";
+
+    } else if (puntuacion >= 8) {
+
+        mensaje =
+            "🌟 ¡Excelente resultado!";
+
+    } else if (puntuacion >= 6) {
+
+        mensaje =
+            "👍 ¡Muy bien!";
+
+    } else if (puntuacion >= 4) {
+
+        mensaje =
+            "📚 Buen comienzo. Podés seguir estudiando.";
+
+    } else {
+
+        mensaje =
+            "💪 ¡No te rindas! Volvé a intentarlo.";
+
+    }
+
+
+    resultElement.innerHTML =
+        `${mensaje}<br><br>
+        Tu puntuación es: ${puntuacion}/10`;
+
+    restartButton.style.display =
+        "block";
+
+}
+
+
+restartButton.addEventListener(
+    "click",
+    () => {
+
+        preguntaActual = 0;
+
+        puntuacion = 0;
+
+        restartButton.style.display =
+            "none";
+
+        mostrarPregunta();
+
+    }
+);
+
+
+/* INICIAR QUIZ */
+
+mostrarPregunta();
+
+</script>
+
+</body>
+</html>
